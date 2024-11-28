@@ -1,7 +1,11 @@
 [package]
-name = "ostring_sqlite"
-version = "0.1.0"
+name = "ostring_sqlx"
+version = "1.0.0"
 edition = "2021"
+authors = ["weak_cat"]
+description = "A basic configuration persistence wrapper"
+license = "MIT"
+repository = "https://github.com/Weakcat/ostring_sqlx.git"
 
 [dependencies]
 anyhow = "1.0.93"
