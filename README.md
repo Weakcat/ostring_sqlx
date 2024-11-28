@@ -18,3 +18,7 @@ ostring_sqlx 是一个基于 sqlx 的数据库操作封装，为 ostring 项目�
 [dependencies]
 ostring_sqlx = "1.0.0"
 ```
+
+# TODO: 添加更多功能
+- 添加测试功能
+- 添加更多数据库支持
