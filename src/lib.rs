@@ -4,9 +4,8 @@ pub mod tab_user;
 pub mod tab_userconf;
 
 use anyhow::Result;
-use sqlx::sqlite::{Sqlite, SqlitePoolOptions};
+use sqlx::sqlite::Sqlite;
 use sqlx::Pool;
-use std::env;
 use tab_auth::{AuthOption, AuthQB};
 use tab_conf::{ConfOption, ConfQB};
 use tab_user::{UserOption, UserQB, Verify};
@@ -20,21 +19,15 @@ pub struct OSqliteMan {
 impl ConfOption {}
 
 impl OSqliteMan {
-    pub async fn init(db_filename: &str) -> Result<Self> {
-        let exe_path = env::current_exe()?;
-        let db_path = exe_path.parent().unwrap().join(db_filename);
-        if !db_path.exists() {
-            std::fs::write(db_path.clone(), b"")?;
-        };
-        let str_path = db_path.to_str().unwrap();
-        let sql_url = format!("sqlite:{}", str_path);
-        let pool: Pool<Sqlite> = SqlitePoolOptions::new().connect(sql_url.as_str()).await?;
-        AuthQB::new(pool.clone()).init_table().await?;
-        UserQB::new(pool.clone()).init_table().await?;
-        ConfQB::new(pool.clone()).init_table().await?;
-        UconfQB::new(pool.clone()).init_table().await?;
-        let osq = OSqliteMan { pool };
-        Ok(osq)
+    pub fn new(pool: Pool<Sqlite>) -> Self {
+        OSqliteMan { pool }
+    }
+    pub async fn init_table(&self) -> Result<()> {
+        AuthQB::new(self.pool.clone()).init_table().await?;
+        UserQB::new(self.pool.clone()).init_table().await?;
+        ConfQB::new(self.pool.clone()).init_table().await?;
+        UconfQB::new(self.pool.clone()).init_table().await?;
+        Ok(())
     }
 
     pub async fn add_user(&self, user: UserOption) -> Result<()> {
